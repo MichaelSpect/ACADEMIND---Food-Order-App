@@ -13,13 +13,17 @@ const defaultCartState = {
 const CartCtxProvider = (props) => {
   const cartReducerFn = (state, action) => {
     console.log(state);
+    console.log(state.totalAmount, action.item.price, action.item.quantity);
     if (action.type === ACTION.ADD_TO_CART) {
+      const updatedTotalAmount =
+        state.totalAmount + action.item.price * action.item.quantity;
+
       const updatedItems = [...state.items, action.item];
       console.log(updatedItems);
       return {
         ...state,
         items: updatedItems,
-        totalAmount: state.totalAmount,
+        totalAmount: updatedTotalAmount,
       };
     }
   };
@@ -34,7 +38,7 @@ const CartCtxProvider = (props) => {
   };
 
   const removeItemFromCartHandler = () => {};
-
+  console.log(cartState);
   const cartContext = {
     items: cartState.items,
     totalAmount: cartState.totalAmount,
