@@ -10,8 +10,6 @@ const MealItemForm = (props, ref) => {
   const submitHandler = (e) => {
     e.preventDefault();
     const inputValue = itemQuantityInput.current.inputValue.valueAsNumber;
-    console.log(inputValue);
-
     props.addItemHandler(inputValue);
   };
   return (

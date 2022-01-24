@@ -8,7 +8,6 @@ const MealItem = (props) => {
   const ctx = useContext(CartContext);
   // console.log(ctx);
   const addItemHandler = (inputQuantity) => {
-    console.log("clicked +Add - Submit");
     const itemToCart = {
       id: props.id,
       name: props.name,
@@ -16,7 +15,6 @@ const MealItem = (props) => {
       quantity: inputQuantity,
     };
     ctx.addItem(itemToCart);
-    console.log(ctx);
   };
   return (
     <li className={classes.meal}>

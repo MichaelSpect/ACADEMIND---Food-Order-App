@@ -3,12 +3,12 @@ import classes from "./CartItem.module.css";
 
 const CartItem = (props) => {
   const price = `$${props.price.toFixed(2)}`;
-  const decreaseAmountHandler = () => {
-    props.amount = props.amount - 1;
-  };
-  const increaseAmountHandler = () => {
-    props.amount = props.amount + 1;
-  };
+  // const decreaseAmountHandler = () => {
+  //   props.removeItem();
+  // };
+  // const increaseAmountHandler = () => {
+  //   props.addItem();
+  // };
   return (
     <div className={classes["cart-item"]}>
       <div>
@@ -19,8 +19,8 @@ const CartItem = (props) => {
         </div>
       </div>
       <div className={classes.actions}>
-        <button onClick={decreaseAmountHandler}>-</button>
-        <button onClick={increaseAmountHandler}>+</button>
+        <button onClick={props.removeItem}>-</button>
+        <button onClick={props.addItem}>+</button>
       </div>
     </div>
   );

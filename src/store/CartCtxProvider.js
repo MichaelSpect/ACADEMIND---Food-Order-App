@@ -10,34 +10,80 @@ const defaultCartState = {
   totalAmount: 0,
 };
 
-const CartCtxProvider = (props) => {
-  const cartReducerFn = (state, action) => {
-    console.log(state);
-    console.log(state.totalAmount, action.item.price, action.item.quantity);
-    if (action.type === ACTION.ADD_TO_CART) {
-      const updatedTotalAmount =
-        state.totalAmount + action.item.price * action.item.quantity;
+const cartReducerFn = (state, action) => {
+  // console.log(state);
+  if (action.type === ACTION.ADD_TO_CART) {
+    console.log("ACTION ITEM", action.item);
+    const updatedTotalAmount =
+      state.totalAmount + action.item.price * action.item.quantity;
+    console.log(updatedTotalAmount, +updatedTotalAmount.toFixed(2));
 
-      const updatedItems = [...state.items, action.item];
-      console.log(updatedItems);
-      return {
-        ...state,
-        items: updatedItems,
-        totalAmount: updatedTotalAmount,
+    // finding and updating existing item
+    const index = state.items.findIndex((item) => item.id === action.item.id);
+
+    let updatedItems;
+    if (index >= 0) {
+      // If item is found
+      const itemToUpdate = state.items[index];
+      const updatedSinglItem = {
+        ...itemToUpdate,
+        quantity: itemToUpdate.quantity + action.item.quantity,
       };
+      state.items[index] = updatedSinglItem;
+      // console.log(state.items[index]);
+      updatedItems = [...state.items];
+    } else {
+      // When Item is new in the cart
+      updatedItems = [...state.items, action.item];
     }
-  };
+
+    return {
+      ...state,
+      items: updatedItems,
+      totalAmount: +updatedTotalAmount.toFixed(2),
+    };
+  }
+  if (action.type === ACTION.REMOVE_ITEM) {
+    const index = state.items.findIndex((item) => item.id === action.id);
+    const existingItem = state.items[index];
+    const updatedTotalAmount = state.totalAmount - existingItem.price;
+
+    let updatedItems;
+    if (existingItem.quantity === 1) {
+      updatedItems = state.items.filter((item) => item.id !== existingItem.id);
+    } else {
+      const updatedSinglItem = {
+        ...existingItem,
+        quantity: existingItem.quantity - 1,
+      };
+      state.items[index] = updatedSinglItem;
+      updatedItems = [...state.items];
+    }
+
+    return {
+      ...state,
+      items: updatedItems,
+      totalAmount: +updatedTotalAmount.toFixed(2),
+    };
+  }
+};
+
+const CartCtxProvider = (props) => {
   const [cartState, dispatch] = useReducer(cartReducerFn, defaultCartState);
 
   const addItemToCartHandler = (item) => {
-    console.log(item);
     dispatch({
       type: ACTION.ADD_TO_CART,
       item: item,
     });
   };
 
-  const removeItemFromCartHandler = () => {};
+  const removeItemFromCartHandler = (id) => {
+    dispatch({
+      type: ACTION.REMOVE_ITEM,
+      id: id,
+    });
+  };
   console.log(cartState);
   const cartContext = {
     items: cartState.items,
