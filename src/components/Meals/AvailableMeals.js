@@ -1,35 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Card from "../UI/Card";
 import classes from "./AvailableMeals.module.css";
 import MealItem from "./MealItem/MealItem";
-
-const DUMMY_MEALS = [
-  {
-    id: "m1",
-    name: "Sushi",
-    description: "Finest fish and veggies",
-    price: 22.99,
-  },
-  {
-    id: "m2",
-    name: "Schnitzel",
-    description: "A german specialty!",
-    price: 16.5,
-  },
-  {
-    id: "m3",
-    name: "Barbecue Burger",
-    description: "American, raw, meaty",
-    price: 12.99,
-  },
-  {
-    id: "m4",
-    name: "Green Bowl",
-    description: "Healthy...and green...",
-    price: 18.99,
-  },
-];
-console.log(DUMMY_MEALS);
 
 // const ListMeals = DUMMY_MEALS.map(
 //   (meal) => <li>{meal.name}</li>
@@ -37,10 +9,50 @@ console.log(DUMMY_MEALS);
 //   // <li>{meal.price}</li>
 // );
 const AvailableMeals = (props) => {
+  const [meals, setMeals] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const mealsList = [];
+  useEffect(() => {
+    const mealsFirebase = async () => {
+      setIsLoading(true);
+      try {
+        const request = await fetch(
+          "https://react-learn-http-65e9f-default-rtdb.firebaseio.com/meals.json"
+        );
+        if (!request.ok) {
+          throw new Error("Something goes wrong! Try again later");
+        }
+        const mealsData = await request.json((data) => console.log(data));
+
+        for (const key in mealsData) {
+          const mealObj = {
+            id: key,
+            key: key,
+            name: mealsData[key].name,
+            description: mealsData[key].description,
+            price: mealsData[key].price,
+          };
+          mealsList.push(mealObj);
+        }
+        setMeals(mealsList);
+        setIsLoading(false);
+      } catch (error) {
+        setIsLoading(false);
+        setError(error.message);
+        console.error(error);
+      }
+    };
+
+    mealsFirebase();
+    return () => {};
+  }, []);
   return (
     <Card className={classes.meals}>
+      {isLoading ? <p>Loading...</p> : null}
+      {error ? <p>{error}</p> : null}
       <ul>
-        {DUMMY_MEALS.map((meal) => (
+        {meals.map((meal) => (
           <MealItem
             key={meal.id}
             id={meal.id}

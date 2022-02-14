@@ -1,10 +1,12 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import CartContext from "../../store/cart-context";
 import Modal from "../UI/Modal";
 import classes from "./Cart.module.css";
 import CartItem from "./CartItem";
+import CheckOut from "./CheckOut";
 
 const Cart = (props) => {
+  const [isOrdered, setIsOrdered] = useState(false);
   const cartCtx = useContext(CartContext);
   console.log(cartCtx);
 
@@ -34,6 +36,24 @@ const Cart = (props) => {
     </ul>
   );
 
+  const orderHandler = () => {
+    console.log("ORDER IS CLICKED");
+    setIsOrdered(true);
+  };
+  const modalActions = (
+    <div className={classes.actions}>
+      <button
+        className={classes["button--alt"]}
+        onClick={props.hideCartHandler}
+      >
+        Close
+      </button>
+      <button className={classes.button} onClick={orderHandler}>
+        Order
+      </button>
+    </div>
+  );
+
   return (
     <Modal onClose={props.hideCartHandler}>
       {cartItems}
@@ -42,15 +62,9 @@ const Cart = (props) => {
         <span>Total Amount</span>
         <span>${cartCtx.totalAmount}</span>
       </div>
-      <div className={classes.actions}>
-        <button
-          className={classes["button--alt"]}
-          onClick={props.hideCartHandler}
-        >
-          Close
-        </button>
-        <button className={classes.button}>Order</button>
-      </div>
+
+      {isOrdered && <CheckOut setIsOrdered={setIsOrdered} />}
+      {!isOrdered && modalActions}
     </Modal>
   );
 };
