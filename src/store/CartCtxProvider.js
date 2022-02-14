@@ -4,6 +4,7 @@ import CartContext from "./cart-context";
 const ACTION = {
   ADD_TO_CART: "add-to-cart",
   REMOVE_ITEM: "remove-item",
+  CLEAR_CART: "CLEAR_CART",
 };
 const defaultCartState = {
   items: [],
@@ -66,6 +67,9 @@ const cartReducerFn = (state, action) => {
       totalAmount: +updatedTotalAmount.toFixed(2),
     };
   }
+  if (action.type === ACTION.CLEAR_CART) {
+    return defaultCartState;
+  }
 };
 
 const CartCtxProvider = (props) => {
@@ -84,12 +88,18 @@ const CartCtxProvider = (props) => {
       id: id,
     });
   };
-  console.log(cartState);
+
+  const clearCartHandler = () => {
+    dispatch({
+      type: ACTION.CLEAR_CART,
+    });
+  };
   const cartContext = {
     items: cartState.items,
     totalAmount: cartState.totalAmount,
     addItem: addItemToCartHandler,
     removeItem: removeItemFromCartHandler,
+    clearCart: clearCartHandler,
   };
 
   return (

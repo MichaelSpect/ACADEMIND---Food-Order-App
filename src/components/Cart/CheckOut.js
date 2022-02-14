@@ -54,13 +54,13 @@ const CheckOut = (props) => {
         city: enteredCity,
       };
       console.log(orderDetailes);
+      props.submitOrderHandler(orderDetailes);
     }
   };
 
   const nameControlClasses = `${classes.control} ${
     !formInputsValidity.name ? classes.invalid : ""
   }`;
-  console.log(nameControlClasses);
   const streetControlClasses = `${classes.control} ${
     !formInputsValidity.street ? classes.invalid : ""
   }`;
